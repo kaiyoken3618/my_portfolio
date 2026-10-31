@@ -219,7 +219,7 @@ export const education = [
     school: 'Ahsanullah University of Science and Technology',
     degree: 'B.Sc. in Computer Science & Engineering',
     period: 'Apr 2016 – Jan 2021',
-    detail: 'CGPA 3.35 / 4.00 · Thesis published on IEEE Xplore',
+    detail: 'CGPA 3.4 / 4.00 · Thesis published on IEEE Xplore',
     link: 'https://ieeexplore.ieee.org/document/9707392',
   },
   {
