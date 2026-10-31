@@ -1,0 +1,47 @@
+---
+import { stats } from '../data/profile';
+---
+
+<section id="stats" class="container-x py-10" aria-label="Impact in numbers">
+  <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+    {
+      stats.map((s, i) => (
+        <div data-reveal style={`--delay: ${i * 80}ms`} class="card spotlight p-5 sm:p-6">
+          <div class="font-mono text-3xl font-semibold text-ink sm:text-4xl">
+            <span data-count={s.value}>{s.value}</span><span class="gradient-text">{s.suffix}</span>
+          </div>
+          <p class="mt-2 text-xs leading-relaxed text-muted sm:text-sm">{s.label}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  // Count up when the numbers scroll into view
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const nums = document.querySelectorAll<HTMLElement>('[data-count]');
+  if (!reduce) {
+    nums.forEach((n) => (n.textContent = '0'));
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const el = e.target as HTMLElement;
+          const target = Number(el.dataset.count);
+          const start = performance.now();
+          const dur = 1400;
+          const step = (t: number) => {
+            const p = Math.min(1, (t - start) / dur);
+            el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
+            if (p < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+          io.unobserve(el);
+        }
+      },
+      { threshold: 0.5 },
+    );
+    nums.forEach((n) => io.observe(n));
+  }
+</script>

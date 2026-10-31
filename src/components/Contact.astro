@@ -1,0 +1,94 @@
+---
+import Icon from './Icon.astro';
+import { profile } from '../data/profile';
+---
+
+<section id="contact" class="container-x py-24">
+  <div data-reveal class="card relative overflow-hidden p-6 sm:p-12">
+    <div aria-hidden="true" class="absolute -right-24 -top-24 h-72 w-72 rounded-full blur-3xl" style="background: var(--glow-2)"></div>
+    <div class="relative grid gap-12 lg:grid-cols-2">
+      <div>
+        <p class="section-label mb-3">// contact</p>
+        <h2 class="text-3xl font-semibold tracking-tight text-ink sm:text-5xl">
+          Let's build something <span class="gradient-text">reliable</span>.
+        </h2>
+        <p class="mt-5 max-w-md text-base leading-relaxed text-muted">
+          Hiring for a senior backend or platform role, or need help scaling a system? Send a message and I'll get back to you.
+        </p>
+
+        <div class="mt-8 space-y-3">
+          <a
+            href="#contact"
+            data-email-user={profile.emailUser}
+            data-email-domain={profile.emailDomain}
+            class="group flex items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3 transition hover:border-accent"
+          >
+            <Icon name="mail" size={18} class="text-accent" />
+            <span data-email-label class="font-mono text-sm text-ink">{profile.emailUser} [at] {profile.emailDomain}</span>
+            <Icon name="arrowUpRight" size={15} class="ml-auto text-faint transition group-hover:text-accent" />
+          </a>
+          <a href={profile.linkedin} target="_blank" rel="noopener" class="group flex items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3 transition hover:border-accent">
+            <Icon name="linkedin" size={18} class="text-accent" />
+            <span class="text-sm text-ink">LinkedIn</span>
+            <Icon name="arrowUpRight" size={15} class="ml-auto text-faint transition group-hover:text-accent" />
+          </a>
+          <a href={profile.github} target="_blank" rel="noopener" class="group flex items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3 transition hover:border-accent">
+            <Icon name="github" size={18} class="text-accent" />
+            <span class="font-mono text-sm text-ink">@{profile.githubHandle}</span>
+            <Icon name="arrowUpRight" size={15} class="ml-auto text-faint transition group-hover:text-accent" />
+          </a>
+        </div>
+      </div>
+
+      <!-- Netlify Forms: detected at deploy time from this static HTML; submissions appear in the Netlify dashboard. -->
+      <form name="contact" method="POST" action="/thanks/" data-netlify="true" netlify-honeypot="company" class="space-y-4">
+        <input type="hidden" name="form-name" value="contact" />
+        <p class="hidden">
+          <label>Leave this empty: <input name="company" tabindex="-1" autocomplete="off" /></label>
+        </p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <label class="block">
+            <span class="mb-1.5 block font-mono text-xs text-muted">name</span>
+            <input required name="name" autocomplete="name" class="field" placeholder="Jane Doe" />
+          </label>
+          <label class="block">
+            <span class="mb-1.5 block font-mono text-xs text-muted">email</span>
+            <input required type="email" name="email" autocomplete="email" class="field" placeholder="jane@company.com" />
+          </label>
+        </div>
+        <label class="block">
+          <span class="mb-1.5 block font-mono text-xs text-muted">subject</span>
+          <input name="subject" class="field" placeholder="Senior backend role at …" />
+        </label>
+        <label class="block">
+          <span class="mb-1.5 block font-mono text-xs text-muted">message</span>
+          <textarea required name="message" rows="5" class="field resize-y" placeholder="Tell me a bit about it…"></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary w-full justify-center sm:w-auto">
+          <Icon name="send" size={16} /> Send message
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .field {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+    color: var(--text);
+    border-radius: 0.75rem;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .field::placeholder {
+    color: var(--faint);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--glow-1);
+  }
+</style>

@@ -1,0 +1,95 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { skillGroups } from '../data/profile';
+---
+
+<section id="skills" class="container-x py-24">
+  <SectionHeading label="skills" title="The toolbox." intro="Filter by area to see what I work with day to day." />
+
+  <div data-reveal class="mb-8 flex flex-wrap gap-2" role="group" aria-label="Filter skills">
+    <button type="button" class="skill-filter is-active" data-filter="all" aria-pressed="true">All</button>
+    {
+      skillGroups.map((g) => (
+        <button type="button" class="skill-filter" data-filter={g.id} aria-pressed="false">
+          {g.label}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      skillGroups.map((g, i) => (
+        <div data-reveal data-group={g.id} style={`--delay: ${i * 60}ms`} class="skill-group card spotlight p-6">
+          <div class="mb-4 flex items-center justify-between">
+            <h3 class="font-semibold text-ink">{g.label}</h3>
+            <span class="font-mono text-xs text-faint">{String(g.skills.length).padStart(2, '0')}</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            {g.skills.map((s) => (
+              <span class="skill-pill">{s}</span>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .skill-filter {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    border-radius: 999px;
+    padding: 0.45rem 0.95rem;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+  }
+  .skill-filter:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+  .skill-filter.is-active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  .skill-pill {
+    border: 1px solid var(--border);
+    background: var(--surface-strong);
+    color: var(--text);
+    border-radius: 0.6rem;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.85rem;
+    transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+  .skill-pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .skill-group {
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  .skill-group.is-dimmed {
+    opacity: 0.25;
+    transform: scale(0.98);
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.skill-filter');
+  const groups = document.querySelectorAll<HTMLElement>('.skill-group');
+  buttons.forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const f = btn.dataset.filter;
+      buttons.forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-pressed', String(on));
+      });
+      groups.forEach((g) => g.classList.toggle('is-dimmed', f !== 'all' && g.dataset.group !== f));
+    }),
+  );
+</script>

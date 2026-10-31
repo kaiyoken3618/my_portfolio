@@ -1,0 +1,134 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from './Icon.astro';
+import portrait from '../assets/portrait-suit.jpg';
+import { profile } from '../data/profile';
+---
+
+<section id="top" class="container-x relative flex min-h-[100svh] items-center pt-24 pb-16">
+  <div class="grid w-full items-center gap-12 lg:grid-cols-[1.25fr_1fr] lg:gap-16">
+    <div>
+      <div data-reveal class="mb-6 inline-flex items-center gap-2.5 rounded-full border border-line bg-surface px-3 py-1.5 text-xs text-muted">
+        <span class="status-dot"></span>
+        {profile.openTo}
+      </div>
+
+      <p data-reveal style="--delay: 60ms" class="mb-3 font-mono text-sm text-accent">Hello, world! I'm</p>
+
+      <h1 data-reveal style="--delay: 120ms" class="text-4xl font-semibold tracking-tight text-ink sm:text-6xl lg:text-7xl">
+        {profile.name.split(' ').slice(0, 2).join(' ')}<br />
+        <span class="gradient-text">{profile.name.split(' ').slice(2).join(' ')}</span>
+      </h1>
+
+      <p data-reveal style="--delay: 180ms" class="mt-6 h-7 font-mono text-base text-ink sm:text-lg" aria-live="polite">
+        <span class="text-faint">&gt;</span>
+        <span id="typed" class="caret" data-roles={JSON.stringify(profile.roles)}>{profile.roles[0]}</span>
+      </p>
+
+      <p data-reveal style="--delay: 240ms" class="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
+        {profile.tagline}
+      </p>
+
+      <div data-reveal style="--delay: 300ms" class="mt-8 flex flex-wrap gap-3">
+        <a href="#projects" class="btn btn-primary">
+          See my work <Icon name="arrowRight" size={16} />
+        </a>
+        <a href={profile.cv} download class="btn btn-ghost">
+          <Icon name="download" size={16} /> Download CV
+        </a>
+      </div>
+
+      <div data-reveal style="--delay: 360ms" class="mt-8 flex items-center gap-5 text-muted">
+        <a href={profile.github} target="_blank" rel="noopener" class="transition hover:text-accent" aria-label="GitHub">
+          <Icon name="github" size={20} />
+        </a>
+        <a href={profile.linkedin} target="_blank" rel="noopener" class="transition hover:text-accent" aria-label="LinkedIn">
+          <Icon name="linkedin" size={20} />
+        </a>
+        <a href="#contact" class="transition hover:text-accent" aria-label="Email">
+          <Icon name="mail" size={20} />
+        </a>
+        <span class="h-4 w-px bg-line-strong"></span>
+        <span class="flex items-center gap-1.5 text-sm"><Icon name="mapPin" size={15} /> {profile.location}</span>
+      </div>
+    </div>
+
+    <div data-reveal style="--delay: 200ms" class="relative mx-auto w-full max-w-sm lg:max-w-none">
+      <div id="tilt" class="relative transition-transform duration-300 ease-out will-change-transform">
+        <div class="absolute -inset-3 rounded-[2rem] opacity-70 blur-2xl" style="background: linear-gradient(135deg, var(--glow-1), var(--glow-2))"></div>
+        <div class="relative overflow-hidden rounded-[1.75rem] border border-line-strong bg-bg-soft p-2">
+          <div class="flex items-center gap-1.5 px-3 pb-2 pt-1">
+            <span class="h-2.5 w-2.5 rounded-full bg-[#ff5f57]"></span>
+            <span class="h-2.5 w-2.5 rounded-full bg-[#febc2e]"></span>
+            <span class="h-2.5 w-2.5 rounded-full bg-[#28c840]"></span>
+            <span class="ml-3 font-mono text-[11px] text-faint">~/enamul/profile.jpg</span>
+          </div>
+          <Picture
+            src={portrait}
+            formats={['avif', 'webp']}
+            widths={[400, 640, 900]}
+            sizes="(min-width: 1024px) 440px, 90vw"
+            alt="Portrait of Enamul Haq Chowdhury in a dark blazer"
+            class="aspect-[4/5] w-full rounded-[1.25rem] object-cover object-[50%_20%]"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+
+        <div class="absolute -left-4 bottom-10 hidden rounded-xl border border-line-strong bg-bg-soft/90 px-4 py-3 font-mono text-xs shadow-2xl backdrop-blur-md sm:block">
+          <div class="text-faint">// currently</div>
+          <div class="text-ink">Senior SWE @ <span class="text-accent">Synesis IT</span></div>
+        </div>
+        <div class="absolute -right-3 top-16 hidden rounded-xl border border-line-strong bg-bg-soft/90 px-4 py-3 font-mono text-xs shadow-2xl backdrop-blur-md sm:block">
+          <div class="text-faint">stack.primary</div>
+          <div class="text-ink">Java · Spring Boot</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a href="#stats" class="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-1 text-faint transition hover:text-accent sm:flex" aria-label="Scroll down">
+    <span class="font-mono text-[11px]">scroll</span>
+    <Icon name="chevronDown" size={16} class="animate-bounce" />
+  </a>
+</section>
+
+<script>
+  // Typewriter cycling through roles
+  const el = document.getElementById('typed');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (el && !reduce) {
+    const roles: string[] = JSON.parse(el.dataset.roles || '[]');
+    let i = 0;
+    let n = roles[0].length;
+    let deleting = true;
+    const tick = () => {
+      const word = roles[i];
+      n += deleting ? -1 : 1;
+      el.textContent = word.slice(0, n);
+      let delay = deleting ? 35 : 70;
+      if (!deleting && n === word.length) {
+        deleting = true;
+        delay = 2200;
+      } else if (deleting && n === 0) {
+        deleting = false;
+        i = (i + 1) % roles.length;
+        delay = 300;
+      }
+      setTimeout(tick, delay);
+    };
+    setTimeout(tick, 2600);
+  }
+
+  // Subtle 3D tilt on the portrait
+  const tilt = document.getElementById('tilt');
+  if (tilt && !reduce && window.matchMedia('(pointer: fine)').matches) {
+    tilt.addEventListener('pointermove', (e) => {
+      const r = tilt.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      tilt.style.transform = `perspective(900px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`;
+    });
+    tilt.addEventListener('pointerleave', () => (tilt.style.transform = ''));
+  }
+</script>

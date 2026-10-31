@@ -1,0 +1,51 @@
+---
+import { Picture } from 'astro:assets';
+import SectionHeading from './SectionHeading.astro';
+import portrait from '../assets/portrait-casual.jpg';
+import { profile } from '../data/profile';
+
+const focus = [
+  { k: 'architecture', v: 'Monolith → microservices migrations' },
+  { k: 'performance', v: 'Search, caching & concurrency at scale' },
+  { k: 'reliability', v: 'Event-driven messaging & observability' },
+  { k: 'security', v: 'OAuth2, RBAC, 2FA, secrets management' },
+];
+---
+
+<section id="about" class="container-x py-24">
+  <div class="grid items-start gap-12 lg:grid-cols-[1fr_1.3fr] lg:gap-16">
+    <div data-reveal class="relative mx-auto w-full max-w-sm lg:sticky lg:top-28">
+      <div class="overflow-hidden rounded-[1.75rem] border border-line-strong">
+        <Picture
+          src={portrait}
+          formats={['avif', 'webp']}
+          widths={[400, 640, 900]}
+          sizes="(min-width: 1024px) 400px, 90vw"
+          alt="Enamul Haq Chowdhury sitting in a café"
+          class="aspect-square w-full object-cover object-[30%_35%]"
+        />
+      </div>
+      <div class="absolute -bottom-5 right-4 rounded-xl border border-line-strong bg-bg-soft/90 px-4 py-3 font-mono text-xs backdrop-blur-md">
+        <span class="text-faint">coffee.status</span> <span class="text-accent">= "brewing"</span>
+      </div>
+    </div>
+
+    <div>
+      <SectionHeading label="about me" title="Engineer for systems that need to scale." />
+      <div class="space-y-5 text-base leading-relaxed text-muted sm:text-lg">
+        {profile.summary.map((p, i) => <p data-reveal style={`--delay: ${i * 70}ms`}>{p}</p>)}
+      </div>
+
+      <div class="mt-10 grid gap-3 sm:grid-cols-2">
+        {
+          focus.map((f, i) => (
+            <div data-reveal style={`--delay: ${i * 70}ms`} class="card spotlight p-4">
+              <p class="font-mono text-xs text-accent">{f.k}</p>
+              <p class="mt-1 text-sm text-ink">{f.v}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

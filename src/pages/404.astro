@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="404 · Page not found">
+  <main id="main" class="container-x flex min-h-screen flex-col items-center justify-center text-center">
+    <p class="font-mono text-sm text-accent">HTTP/1.1 404 Not Found</p>
+    <h1 class="mt-4 text-6xl font-semibold tracking-tight text-ink sm:text-8xl"><span class="gradient-text">404</span></h1>
+    <p class="mt-4 max-w-md text-muted">This endpoint isn't mapped to any handler. Even the best service discovery can't find it.</p>
+    <pre class="card mt-8 px-5 py-4 text-left font-mono text-xs text-muted">GET {Astro.url.pathname}
+→ <span class="text-accent">redirect</span> /</pre>
+    <a href="/" class="btn btn-primary mt-8">Back to home</a>
+  </main>
+</Base>

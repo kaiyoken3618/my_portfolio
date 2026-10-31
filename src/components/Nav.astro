@@ -1,0 +1,144 @@
+---
+import Icon from './Icon.astro';
+import { navLinks, profile } from '../data/profile';
+---
+
+<header id="site-header" class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
+  <nav class="container-x flex h-16 items-center justify-between gap-4" aria-label="Main">
+    <a href="#top" class="group flex items-center gap-2 font-mono text-sm font-semibold">
+      <span class="grid h-8 w-8 place-items-center rounded-lg border border-line-strong bg-surface text-accent transition group-hover:border-accent">EC</span>
+      <span class="hidden sm:inline text-ink">{profile.shortName}<span class="text-accent">.</span>dev</span>
+    </a>
+
+    <ul class="hidden items-center gap-1 md:flex">
+      {
+        navLinks.map((l) => (
+          <li>
+            <a href={l.href} data-nav class="rounded-lg px-3 py-2 text-sm text-muted transition hover:text-ink">
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        data-open-palette
+        class="hidden items-center gap-2 rounded-lg border border-line bg-surface px-2.5 py-1.5 font-mono text-xs text-muted transition hover:border-line-strong hover:text-ink sm:flex"
+        aria-label="Open command palette"
+      >
+        <Icon name="command" size={14} />
+        <span>Ctrl K</span>
+      </button>
+      <button
+        type="button"
+        id="theme-toggle"
+        class="grid h-9 w-9 place-items-center rounded-lg border border-line bg-surface text-muted transition hover:border-line-strong hover:text-ink"
+        aria-label="Toggle color theme"
+      >
+        <span class="theme-icon-dark"><Icon name="sun" size={16} /></span>
+        <span class="theme-icon-light hidden"><Icon name="moon" size={16} /></span>
+      </button>
+      <button
+        type="button"
+        id="menu-toggle"
+        class="grid h-9 w-9 place-items-center rounded-lg border border-line bg-surface text-muted md:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <Icon name="menu" size={18} />
+      </button>
+    </div>
+  </nav>
+
+  <div id="mobile-menu" class="container-x hidden pb-4 md:hidden">
+    <ul class="card flex flex-col p-2">
+      {
+        navLinks.map((l) => (
+          <li>
+            <a href={l.href} class="block rounded-lg px-4 py-3 text-sm text-muted hover:bg-surface-strong hover:text-ink">
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+      <li>
+        <button type="button" data-open-palette class="w-full rounded-lg px-4 py-3 text-left font-mono text-sm text-accent hover:bg-surface-strong">
+          &gt; open command palette
+        </button>
+      </li>
+    </ul>
+  </div>
+</header>
+
+<style>
+  :global([data-theme='light']) .theme-icon-dark {
+    display: none;
+  }
+  :global([data-theme='light']) .theme-icon-light {
+    display: inline;
+  }
+  #site-header.scrolled {
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  a[data-nav].active {
+    color: var(--text);
+    background: var(--surface-strong);
+  }
+</style>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 12);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Theme toggle (also reachable from the command palette via a custom event)
+  const toggleTheme = () => {
+    const root = document.documentElement;
+    const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    try {
+      localStorage.setItem('theme', next);
+    } catch {}
+  };
+  document.getElementById('theme-toggle')!.addEventListener('click', toggleTheme);
+  window.addEventListener('toggle-theme', toggleTheme);
+
+  // Mobile menu
+  const menuBtn = document.getElementById('menu-toggle')!;
+  const menu = document.getElementById('mobile-menu')!;
+  const setMenu = (open: boolean) => {
+    menu.classList.toggle('hidden', !open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+  };
+  menuBtn.addEventListener('click', () => setMenu(menu.classList.contains('hidden')));
+  menu.querySelectorAll('a, button').forEach((el) => el.addEventListener('click', () => setMenu(false)));
+
+  // Open command palette
+  document.querySelectorAll('[data-open-palette]').forEach((b) =>
+    b.addEventListener('click', () => window.dispatchEvent(new Event('open-palette'))),
+  );
+
+  // Highlight the section in view
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('a[data-nav]'));
+  const spy = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        links.forEach((l) => l.classList.toggle('active', l.getAttribute('href') === `#${e.target.id}`));
+      }
+    },
+    { rootMargin: '-45% 0px -50% 0px' },
+  );
+  links.forEach((l) => {
+    const target = document.querySelector(l.getAttribute('href')!);
+    if (target) spy.observe(target);
+  });
+</script>

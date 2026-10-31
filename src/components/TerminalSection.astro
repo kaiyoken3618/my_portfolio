@@ -1,0 +1,17 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import Terminal from './Terminal.tsx';
+---
+
+<section id="terminal" class="container-x py-24">
+  <div class="grid items-center gap-12 lg:grid-cols-[1fr_1.4fr]">
+    <SectionHeading
+      label="interactive"
+      title="Prefer the command line?"
+      intro="Explore my profile the way engineers do. Try help, experience or skills, or the hidden one: sudo hire-me."
+    />
+    <div data-reveal>
+      <Terminal client:visible />
+    </div>
+  </div>
+</section>
